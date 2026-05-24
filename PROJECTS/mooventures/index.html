@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mooventures">
+<title>Mooventures — roam together</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg width="56" height="56" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="18" cy="22" rx="11" ry="8" fill="#f5efe6" stroke="#c9a87a" stroke-width="1"/>
+        <ellipse cx="14" cy="21" rx="4" ry="3" fill="#8b6340" opacity=".55"/>
+        <ellipse cx="22" cy="24" rx="3" ry="2" fill="#8b6340" opacity=".45"/>
+        <ellipse cx="18" cy="13" rx="7" ry="6" fill="#f5efe6" stroke="#c9a87a" stroke-width="1"/>
+        <path d="M11 10 Q12 5 13 8 Q14 4 15 7 Q16 3 17 7 Q18 3 19 7 Q20 4 21 8 Q22 5 23 10" fill="#c9a87a"/>
+        <ellipse cx="10.5" cy="12" rx="3" ry="2" fill="#f5efe6" stroke="#c9a87a" stroke-width="1" transform="rotate(-20,10.5,12)"/>
+        <ellipse cx="25.5" cy="12" rx="3" ry="2" fill="#f5efe6" stroke="#c9a87a" stroke-width="1" transform="rotate(20,25.5,12)"/>
+        <ellipse cx="10.5" cy="12" rx="1.8" ry="1.2" fill="#f0c4b0" transform="rotate(-20,10.5,12)"/>
+        <ellipse cx="25.5" cy="12" rx="1.8" ry="1.2" fill="#f0c4b0" transform="rotate(20,25.5,12)"/>
+        <circle cx="15" cy="12" r="1.4" fill="#3d2b1f"/><circle cx="21" cy="12" r="1.4" fill="#3d2b1f"/>
+        <circle cx="15.4" cy="11.6" r=".45" fill="#fff"/><circle cx="21.4" cy="11.6" r=".45" fill="#fff"/>
+        <ellipse cx="16.5" cy="15" rx="1" ry=".7" fill="#c9a87a"/><ellipse cx="19.5" cy="15" rx="1" ry=".7" fill="#c9a87a"/>
+        <rect x="10" y="28" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
+        <rect x="15" y="29" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
+        <rect x="22" y="28" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
+        <path d="M29 22 Q33 19 32 24" stroke="#c9a87a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="32" cy="24.5" rx="1.8" ry="1.2" fill="#c9a87a"/>
+        <rect x="16.5" y="18" width="3" height="3.5" rx="1" fill="#e8b44a" stroke="#c9950a" stroke-width=".5"/>
+        <circle cx="18" cy="22" r=".6" fill="#c9950a"/>
+      </svg>
+    </div>
+    <div class="auth-title">Mooventures</div>
+    <div class="auth-tagline">roam together</div>
+
+    <div id="auth-tabs" class="auth-tabs">
+      <button class="auth-tab active" onclick="showAuthTab('login')">Sign in</button>
+      <button class="auth-tab" onclick="showAuthTab('signup')">Create account</button>
+    </div>
+
+    <div id="auth-error" class="auth-error" style="display:none"></div>
+
+    <div id="login-form">
+      <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="login-email" placeholder="you@email.com" autocomplete="email"></div>
+      <div class="fg"><label class="fl">Password</label><input class="fi" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="btn-auth" onclick="signIn()">Sign in</button>
+    </div>
+
+    <div id="signup-form" style="display:none">
+      <div class="fg"><label class="fl">Your name</label><input class="fi" type="text" id="signup-name" placeholder="Alex"></div>
+      <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="signup-email" placeholder="you@email.com" autocomplete="email"></div>
+      <div class="fg"><label class="fl">Password</label><input class="fi" type="password" id="signup-password" placeholder="at least 6 characters" autocomplete="new-password"></div>
+      <button class="btn-auth" onclick="signUp()">Create account</button>
+    </div>
+
+    <div class="auth-note">Your travels are private by default. No followers, no public feed.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+
+  <!-- DESKTOP SIDEBAR / MOBILE HIDDEN -->
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <svg class="cow-icon" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="18" cy="22" rx="11" ry="8" fill="#f5efe6" stroke="#c9a87a" stroke-width="1"/>
+        <ellipse cx="14" cy="21" rx="4" ry="3" fill="#8b6340" opacity=".55"/>
+        <ellipse cx="22" cy="24" rx="3" ry="2" fill="#8b6340" opacity=".45"/>
+        <ellipse cx="18" cy="13" rx="7" ry="6" fill="#f5efe6" stroke="#c9a87a" stroke-width="1"/>
+        <path d="M11 10 Q12 5 13 8 Q14 4 15 7 Q16 3 17 7 Q18 3 19 7 Q20 4 21 8 Q22 5 23 10" fill="#c9a87a"/>
+        <ellipse cx="10.5" cy="12" rx="3" ry="2" fill="#f5efe6" stroke="#c9a87a" stroke-width="1" transform="rotate(-20,10.5,12)"/>
+        <ellipse cx="25.5" cy="12" rx="3" ry="2" fill="#f5efe6" stroke="#c9a87a" stroke-width="1" transform="rotate(20,25.5,12)"/>
+        <ellipse cx="10.5" cy="12" rx="1.8" ry="1.2" fill="#f0c4b0" transform="rotate(-20,10.5,12)"/>
+        <ellipse cx="25.5" cy="12" rx="1.8" ry="1.2" fill="#f0c4b0" transform="rotate(20,25.5,12)"/>
+        <circle cx="15" cy="12" r="1.4" fill="#3d2b1f"/><circle cx="21" cy="12" r="1.4" fill="#3d2b1f"/>
+        <circle cx="15.4" cy="11.6" r=".45" fill="#fff"/><circle cx="21.4" cy="11.6" r=".45" fill="#fff"/>
+        <ellipse cx="16.5" cy="15" rx="1" ry=".7" fill="#c9a87a"/><ellipse cx="19.5" cy="15" rx="1" ry=".7" fill="#c9a87a"/>
+        <rect x="10" y="28" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
+        <rect x="15" y="29" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
+        <rect x="22" y="28" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
+        <path d="M29 22 Q33 19 32 24" stroke="#c9a87a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="32" cy="24.5" rx="1.8" ry="1.2" fill="#c9a87a"/>
+        <rect x="16.5" y="18" width="3" height="3.5" rx="1" fill="#e8b44a" stroke="#c9950a" stroke-width=".5"/>
+        <circle cx="18" cy="22" r=".6" fill="#c9950a"/>
+      </svg>
+      <div><div class="bname">Mooventures</div><div class="btag">roam together</div></div>
+    </div>
+    <div class="ns">Explore</div>
+    <div class="ni active" data-panel="map" onclick="showPanel('map',this)"><i class="ti ti-map-pin"></i> World map</div>
+    <div class="ni" data-panel="log" onclick="showPanel('log',this)"><i class="ti ti-notebook"></i> Travel log</div>
+    <div class="ni" data-panel="route" onclick="showPanel('route',this)"><i class="ti ti-route"></i> City routes</div>
+    <div class="ns">Social</div>
+    <div class="ni" data-panel="chat" onclick="showPanel('chat',this)"><i class="ti ti-messages"></i> Herd chat</div>
+    <div class="ni" data-panel="buddies" onclick="showPanel('buddies',this)"><i class="ti ti-users"></i> Buddies</div>
+    <div class="ni special" data-panel="serendipity" onclick="showPanel('serendipity',this)"><i class="ti ti-sparkles"></i> Serendipity</div>
+    <div class="ns">Insights</div>
+    <div class="ni" data-panel="stats" onclick="showPanel('stats',this)"><i class="ti ti-chart-bar"></i> Statistics</div>
+    <div class="ni" data-panel="privacy" onclick="showPanel('privacy',this)"><i class="ti ti-lock"></i> Privacy</div>
+    <div class="sfoot">
+      <div class="av-row">
+        <div class="av" id="user-av">?</div>
+        <span class="user-name" id="user-name">Loading…</span>
+      </div>
+      <button class="btn-signout" onclick="signOut()"><i class="ti ti-logout"></i> Sign out</button>
+    </div>
+  </nav>
+
+  <!-- PANELS -->
+  <div class="main" id="main-content">
+
+    <!-- MAP -->
+    <div class="panel active" id="panel-map">
+      <div class="topbar">
+        <span class="ptitle">World map</span>
+      </div>
+      <div class="map-wrap">
+        <div class="map-area" id="map-area">
+          <svg id="world-svg" style="width:100%;height:100%"></svg>
+          <div id="map-tooltip" class="map-tooltip"></div>
+          <div id="map-stat" class="map-stat">Loading map…</div>
+          <div class="map-legend">
+            <div class="leg-row"><div class="ldot" style="background:#7c5c2e"></div>Visited</div>
+            <div class="leg-row"><div class="ldot" style="background:#0f766e"></div>Long stay</div>
+            <div class="leg-row"><div class="ldot" style="background:#be4a6b"></div>Day trip</div>
+          </div>
+        </div>
+        <div class="map-side" id="map-side">
+          <div class="side-label">Your places</div>
+          <div id="places-list"><div class="empty-state">No trips yet.<br>Add your first one!</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOG -->
+    <div class="panel" id="panel-log">
+      <div class="topbar">
+        <span class="ptitle">Travel log</span>
+        <div class="tr"><button class="btn pri" onclick="openAddTrip()"><i class="ti ti-plus"></i> Add trip</button></div>
+      </div>
+      <div class="log-filters">
+        <select class="btn" id="log-year-filter" onchange="renderLog()">
+          <option value="">All years</option>
+        </select>
+        <select class="btn" id="log-transport-filter" onchange="renderLog()">
+          <option value="">All transport</option>
+          <option>Flight</option><option>Train</option><option>Car</option><option>Bus</option><option>Ferry</option>
+        </select>
+      </div>
+      <div class="scroll" id="log-list" style="padding:0 20px 20px">
+        <div class="empty-state" style="margin-top:40px">No trips logged yet.<br>Add your first adventure!</div>
+      </div>
+    </div>
+
+    <!-- CITY ROUTES -->
+    <div class="panel" id="panel-route">
+      <div class="topbar">
+        <span class="ptitle">City routes</span>
+        <div class="tr"><button class="btn pri" onclick="saveRoute()"><i class="ti ti-device-floppy"></i> Save route</button></div>
+      </div>
+      <div class="route-wrap">
+        <div class="route-side">
+          <div class="wp-form">
+            <div class="wp-form-title"><i class="ti ti-route"></i> Waypoints</div>
+            <div id="wp-list"></div>
+            <div class="wp-add-row">
+              <input class="wp-input" id="wp-input" placeholder="Add a place…" onkeydown="if(event.key==='Enter')addWP()">
+              <button class="btn pri" onclick="addWP()" style="padding:5px 10px"><i class="ti ti-plus"></i></button>
+            </div>
+          </div>
+          <div class="route-stats-box">
+            <div class="rs-row"><span>Stops</span><span id="rs-stops">0</span></div>
+            <div class="rs-row"><span>Est. distance</span><span id="rs-dist">0 km</span></div>
+            <div class="rs-row"><span>Walk time</span><span id="rs-time">0h 0m</span></div>
+          </div>
+          <div class="side-label" style="margin-top:12px">Saved routes</div>
+          <div id="saved-routes-list"><div style="font-size:12px;color:var(--hint);padding:8px 0">No saved routes yet</div></div>
+        </div>
+        <div class="route-map"><svg id="city-svg" style="width:100%;height:100%" viewBox="0 0 600 460"></svg></div>
+      </div>
+    </div>
+
+    <!-- HERD CHAT -->
+    <div class="panel" id="panel-chat">
+      <div class="topbar"><span class="ptitle">Herd chat</span></div>
+      <div class="chat-wrap">
+        <div class="chat-list">
+          <div class="side-label">Trip groups</div>
+          <div id="chat-groups"><div class="empty-state" style="font-size:12px">Add a trip with buddies to start a group chat</div></div>
+        </div>
+        <div class="chat-main">
+          <div class="chat-hdr" id="chat-hdr">
+            <div style="font-size:13px;font-weight:500" id="chat-trip-name">Select a trip group</div>
+            <div style="font-size:11px;color:var(--muted)" id="chat-trip-meta">Herd only · private</div>
+          </div>
+          <div class="chat-msgs" id="chat-msgs">
+            <div class="empty-state" style="margin-top:60px">Select a trip group to start chatting</div>
+          </div>
+          <div class="chat-bar">
+            <button class="btn" style="padding:6px 8px" title="Send photo" onclick="document.getElementById('photo-upload').click()"><i class="ti ti-photo" style="font-size:16px"></i></button>
+            <input type="file" id="photo-upload" accept="image/*" style="display:none" onchange="sendPhoto(this)">
+            <input class="chat-input" id="msg-input" placeholder="Message the herd…" onkeydown="if(event.key==='Enter')sendMsg()">
+            <button class="btn pri" onclick="sendMsg()" style="padding:6px 10px"><i class="ti ti-send" style="font-size:15px"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUDDIES -->
+    <div class="panel" id="panel-buddies">
+      <div class="topbar">
+        <span class="ptitle">Buddies</span>
+        <div class="tr"><button class="btn pri" onclick="openAddBuddy()"><i class="ti ti-plus"></i> Add buddy</button></div>
+      </div>
+      <div class="scroll" style="padding:18px 20px">
+        <div id="buddy-grid" class="buddy-grid">
+          <div class="empty-state">No buddies yet.<br>Add people you travel with!</div>
+        </div>
+        <div style="margin-top:20px">
+          <div class="sec-t">Herd stats</div>
+          <div class="stats-grid-3">
+            <div class="sc"><div class="sc-l">Most frequent</div><div class="sc-v" id="bstat-freq" style="font-size:15px">—</div><div class="sc-s">buddy</div></div>
+            <div class="sc"><div class="sc-l">Solo trips</div><div class="sc-v" id="bstat-solo">0</div><div class="sc-s">of <span id="bstat-total">0</span> total</div></div>
+            <div class="sc"><div class="sc-l">Countries</div><div class="sc-v" id="bstat-countries">0</div><div class="sc-s">visited</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERENDIPITY -->
+    <div class="panel" id="panel-serendipity">
+      <div class="topbar">
+        <span class="ptitle" style="color:var(--violet)">Serendipity</span>
+        <div class="tr"><button class="btn vio" onclick="openMooCode()"><i class="ti ti-user-plus"></i> Met someone</button></div>
+      </div>
+      <div id="ser-main" style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+        <div class="ser-intro">
+          <div class="si-label"><i class="ti ti-sparkles" style="font-size:13px"></i> Chance encounters</div>
+          <div class="si-desc">People you've met on your travels. They see only what you choose — no followers, no feeds.</div>
+        </div>
+        <div class="ser-tabs">
+          <div class="ser-tab active" onclick="serTab('enc',this)">Encounters</div>
+          <div class="ser-tab" onclick="serTab('pending',this)">Pending <span class="pending-badge" id="pending-count">0</span></div>
+          <div class="ser-tab" onclick="serTab('add',this)">Add new</div>
+        </div>
+        <div class="scroll">
+          <div id="ser-enc"><div class="empty-state" style="margin-top:40px">No encounters yet.<br>Every trip holds the possibility.</div></div>
+          <div id="ser-pending" style="display:none;padding:14px 20px">
+            <div class="side-label">Waiting on you</div>
+            <div id="pending-list"><div style="font-size:12px;color:var(--hint)">No pending requests</div></div>
+          </div>
+          <div id="ser-add" style="display:none;padding:16px 20px">
+            <div class="qr-area">
+              <div class="qr-box" id="my-qr-code"></div>
+              <div>
+                <div style="font-size:13px;font-weight:500;margin-bottom:3px">Your Moo code</div>
+                <div style="font-size:11px;color:var(--muted);line-height:1.4">Share this with someone you've met. They won't see anything until you both accept.</div>
+                <div style="font-size:12px;font-weight:500;color:var(--brown);margin-top:6px" id="moo-code-display"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:7px;margin-bottom:12px">
+              <input placeholder="Enter their Moo code…" id="their-moo-code" style="flex:1;padding:7px 10px;border:0.5px solid var(--bd2);border-radius:var(--rs);font-family:inherit;font-size:13px;background:var(--sur2);color:var(--ink);outline:none">
+              <button class="btn vio" onclick="sendMooRequest()">Send Moo</button>
+            </div>
+            <div class="moo-info-box"><i class="ti ti-shield-check" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Neither person sees any details until both accept. You choose what to reveal, one item at a time.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="panel" id="panel-stats">
+      <div class="topbar">
+        <span class="ptitle">Statistics</span>
+        <div class="tr">
+          <div class="ptabs">
+            <button class="ptab active" onclick="setStatPeriod('month',this)">Month</button>
+            <button class="ptab" onclick="setStatPeriod('year',this)">Year</button>
+            <button class="ptab" onclick="setStatPeriod('all',this)">All time</button>
+          </div>
+        </div>
+      </div>
+      <div class="scroll">
+        <div class="sg">
+          <div class="sc"><div class="sc-l">Total distance</div><div class="sc-v" id="stat-dist">0</div><div class="sc-s">km traveled</div></div>
+          <div class="sc"><div class="sc-l">Travel hours</div><div class="sc-v" id="stat-hrs">0</div><div class="sc-s">in transit</div></div>
+          <div class="sc"><div class="sc-l">Places</div><div class="sc-v" id="stat-places">0</div><div class="sc-s" id="stat-countries">0 countries</div></div>
+          <div class="sc"><div class="sc-l">Trips</div><div class="sc-v" id="stat-trips">0</div><div class="sc-s">recorded</div></div>
+        </div>
+        <div class="stats-body">
+          <div>
+            <div class="sec-t">Trips over time</div>
+            <div class="bar-chart" id="stat-chart"><div style="font-size:12px;color:var(--hint);padding:20px 0">Add trips to see your chart</div></div>
+          </div>
+          <div>
+            <div class="sec-t">Top destinations</div>
+            <div id="top-destinations"><div style="font-size:12px;color:var(--hint)">No trips yet</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVACY -->
+    <div class="panel" id="panel-privacy">
+      <div class="topbar">
+        <span class="ptitle">Privacy</span>
+        <div class="tr"><span class="privacy-badge"><i class="ti ti-lock" style="font-size:12px;vertical-align:-1px;margin-right:3px"></i>Herd-only by default</span></div>
+      </div>
+      <div class="scroll"><div style="padding:18px 20px">
+        <div class="priv-section">
+          <div class="ps-head"><div class="ps-icon" style="background:var(--brs);color:var(--brown)"><i class="ti ti-users"></i></div><div><div class="ps-title">Your travel data</div><div class="ps-sub">Visible only to your herd</div></div></div>
+          <div style="padding:10px 14px">
+            <div class="toggle-row"><div><div class="tl2">World map <span class="vpill vp-herd">Herd only</span></div><div class="ts2">Visited places and routes</div></div><label class="tog"><input type="checkbox" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+            <div class="toggle-row"><div><div class="tl2">Travel log <span class="vpill vp-herd">Herd only</span></div><div class="ts2">Dates, distances, transport</div></div><label class="tog"><input type="checkbox" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+            <div class="toggle-row"><div><div class="tl2">Statistics <span class="vpill vp-herd">Herd only</span></div><div class="ts2">Totals and charts</div></div><label class="tog"><input type="checkbox" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+            <div class="toggle-row"><div><div class="tl2">No public profile <span class="vpill vp-none">Always off</span></div><div class="ts2">No followers, no public feed</div></div><div style="font-size:18px;color:var(--teal)"><i class="ti ti-lock"></i></div></div>
+          </div>
+        </div>
+        <div class="priv-section">
+          <div class="ps-head"><div class="ps-icon" style="background:var(--vios);color:var(--violet)"><i class="ti ti-sparkles"></i></div><div><div class="ps-title">Serendipity connections</div><div class="ps-sub">Fine-grained control per person</div></div></div>
+          <div style="padding:10px 14px">
+            <div class="toggle-row"><div><div class="tl2">Discoverable via Moo code <span class="vpill vp-ask">On request</span></div><div class="ts2">Others can send you a connection request</div></div><label class="tog"><input type="checkbox" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+            <div class="toggle-row"><div><div class="tl2">Default share: first name only <span class="vpill vp-herd">Default</span></div><div class="ts2">Everything else needs your opt-in</div></div><label class="tog"><input type="checkbox" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+            <div class="toggle-row"><div><div class="tl2">Encrypted herd chat</div><div class="ts2">End-to-end, only your herd can read</div></div><label class="tog"><input type="checkbox" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+          </div>
+        </div>
+        <div class="priv-section">
+          <div class="ps-head"><div class="ps-icon" style="background:var(--ambs);color:var(--amber)"><i class="ti ti-database"></i></div><div><div class="ps-title">Your account</div><div class="ps-sub">Data and storage options</div></div></div>
+          <div style="padding:10px 14px">
+            <div class="toggle-row"><div><div class="tl2">Export all my data</div><div class="ts2">Download everything as JSON</div></div><button class="btn" style="font-size:11px" onclick="exportData()"><i class="ti ti-download" style="font-size:13px"></i> Export</button></div>
+            <div class="toggle-row"><div><div class="tl2" style="color:var(--rose)">Delete account</div><div class="ts2">Permanently removes all your data</div></div><button class="btn" style="font-size:11px;color:var(--rose);border-color:var(--rose)" onclick="confirmDeleteAccount()">Delete</button></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <div class="bn-item active" data-panel="map" onclick="showPanel('map',this)"><i class="ti ti-map-pin"></i><span>Map</span></div>
+    <div class="bn-item" data-panel="log" onclick="showPanel('log',this)"><i class="ti ti-notebook"></i><span>Log</span></div>
+    <div class="bn-item" data-panel="chat" onclick="showPanel('chat',this)"><i class="ti ti-messages"></i><span>Chat</span></div>
+    <div class="bn-item bn-special" data-panel="serendipity" onclick="showPanel('serendipity',this)"><i class="ti ti-sparkles"></i><span>Serendipity</span></div>
+    <div class="bn-item" data-panel="stats" onclick="showPanel('stats',this)"><i class="ti ti-chart-bar"></i><span>Stats</span></div>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- ADD TRIP MODAL -->
+<div class="modal-bg" id="add-trip-modal" onclick="if(event.target===this)closeAddTrip()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title" id="at-title">Where did you go?</div>
+      <div class="modal-sub" id="at-sub">Search any city in the world</div>
+      <div class="msteps">
+        <div class="msd active" id="msd0"></div><div class="msl"></div>
+        <div class="msd" id="msd1"></div><div class="msl"></div>
+        <div class="msd" id="msd2"></div><div class="msl"></div>
+        <div class="msd" id="msd3"></div>
+      </div>
+    </div>
+    <div class="step-panel active" id="mstep0">
+      <div class="search-wrap">
+        <i class="ti ti-search search-ico"></i>
+        <input class="big-input" id="city-inp" placeholder="Type any city…" autocomplete="off" spellcheck="false">
+        <button class="clear-btn" id="city-clear" onclick="clearCitySearch()"><i class="ti ti-x" style="font-size:13px"></i></button>
+      </div>
+      <div id="sug-wrap"></div>
+      <div id="sel-wrap"></div>
+    </div>
+    <div class="step-panel" id="mstep1">
+      <div class="date-display">
+        <div class="date-chip active" id="dc-from" onclick="setSelFrom(true)"><div class="dc-label">From</div><div class="dc-val ph" id="dcfv">Choose</div></div>
+        <div class="date-chip" id="dc-to" onclick="setSelFrom(false)"><div class="dc-label">To</div><div class="dc-val ph" id="dctv">Choose</div></div>
+      </div>
+      <div class="cal-label" id="cal-lbl">Select departure date</div>
+      <div class="cal">
+        <div class="cal-header">
+          <button class="cal-nav" onclick="chMon(-1)">&#8249;</button>
+          <span class="cal-month" id="cal-hdr"></span>
+          <button class="cal-nav" onclick="chMon(1)">&#8250;</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+    </div>
+    <div class="step-panel" id="mstep2">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">How did you get there?</div>
+      <div class="transport-grid">
+        <div class="tb sel" onclick="pickT(this,'Flight')"><i class="ti ti-plane"></i>Flight</div>
+        <div class="tb" onclick="pickT(this,'Train')"><i class="ti ti-train"></i>Train</div>
+        <div class="tb" onclick="pickT(this,'Car')"><i class="ti ti-car"></i>Car</div>
+        <div class="tb" onclick="pickT(this,'Bus')"><i class="ti ti-bus"></i>Bus</div>
+        <div class="tb" onclick="pickT(this,'Ferry')"><i class="ti ti-sailboat"></i>Ferry</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Who came along? <span style="color:var(--hint)">(optional)</span></div>
+      <div class="buddy-chips" id="buddy-chips-list"></div>
+      <div style="display:flex;gap:6px;margin-top:6px;margin-bottom:4px">
+        <input class="fi" id="buddy-name-input" placeholder="Type a name and press +" style="font-size:13px;padding:6px 10px" onkeydown="if(event.key==='Enter'){event.preventDefault();addBuddyToTrip()}">
+        <button class="btn pri" onclick="addBuddyToTrip()" style="padding:6px 10px;flex-shrink:0"><i class="ti ti-plus"></i></button>
+      </div>
+      <div style="font-size:11px;color:var(--hint);margin-bottom:12px">Leave empty for a solo trip — that's perfectly fine too 🐄</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Trip notes (optional)</div>
+      <textarea class="fi" id="trip-notes" placeholder="Any memories worth keeping…" style="resize:none;height:60px;font-size:13px"></textarea>
+    </div>
+    <div class="step-panel" id="mstep3">
+      <div style="text-align:center;padding:14px 0 8px">
+        <div style="font-size:36px;margin-bottom:9px" id="cf-flag">🌍</div>
+        <div style="font-size:16px;font-weight:500;margin-bottom:4px" id="cf-dest">—</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:13px" id="cf-dates">—</div>
+        <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+          <span class="confirm-chip brown" id="cf-transport">✈ Flight</span>
+          <span class="confirm-chip teal" id="cf-buddies">Solo</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="at-back" onclick="atNav(-1)" style="visibility:hidden"><i class="ti ti-arrow-left" style="font-size:13px"></i> Back</button>
+      <span class="step-hint" id="at-hint">Step 1 of 4</span>
+      <button class="btn pri" id="at-next" onclick="atNav(1)" disabled>Next <i class="ti ti-arrow-right" style="font-size:13px"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD BUDDY MODAL -->
+<div class="modal-bg" id="add-buddy-modal" onclick="if(event.target===this)closeAddBuddy()">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:300px">
+    <div class="modal-head">
+      <div class="modal-title">Add a buddy</div>
+      <div class="modal-sub">Search by their email address</div>
+    </div>
+    <div class="step-panel active" style="padding:0 20px 20px">
+      <div id="buddy-search-error" class="auth-error" style="display:none"></div>
+      <div class="fg"><label class="fl">Their email</label><input class="fi" type="email" id="buddy-email" placeholder="friend@email.com"></div>
+      <div id="buddy-search-result"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeAddBuddy()">Cancel</button>
+      <button class="btn pri" onclick="searchBuddy()">Find buddy</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js?v=5"></script>
+</body>
+</html>
