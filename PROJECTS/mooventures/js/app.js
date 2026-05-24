@@ -584,11 +584,22 @@ async function saveTrip() {
 
   // Use .then() instead of await so a hung fetch cannot block this function.
   db.from('trips').insert(tripData)
-    .then(({ error }) => {
+    .then(async ({ error }) => {
       clearTimeout(timeoutId);
       console.log('[saveTrip] insert response received, error:', error);
-      if (error) onError('Error saving trip: ' + error.message);
-      else onSuccess();
+      if (!error) { onSuccess(); return; }
+      // FK violation: profile row missing — create it then retry once.
+      if (error.code === '23503') {
+        const name = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Traveller';
+        await db.from('profiles').upsert({
+          id: currentUser.id, name, email: currentUser.email, moo_code: generateMooCode()
+        });
+        const { error: retryErr } = await db.from('trips').insert(tripData);
+        if (retryErr) onError('Error saving trip: ' + retryErr.message);
+        else onSuccess();
+        return;
+      }
+      onError('Error saving trip: ' + error.message);
     })
     .catch(e => {
       clearTimeout(timeoutId);
