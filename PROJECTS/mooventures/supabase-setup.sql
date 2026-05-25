@@ -26,6 +26,9 @@ create table trips (
   flag text,
   lat float,
   lon float,
+  from_city text,
+  from_lat  float,
+  from_lon  float,
   date_from date,
   date_to date,
   transport text,
@@ -104,7 +107,29 @@ create policy "Users update serendipity" on serendipity for update using (auth.u
 -- 7. Enable realtime for chat
 alter publication supabase_realtime add table messages;
 
--- 8. GRANTS — allow the authenticated role to read/write every table.
+-- 8. TRIGGER — auto-create a profile row on every new signup.
+-- Runs server-side so it fires even if the client-side upsert fails.
+create or replace function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, name, email, moo_code)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
+    new.email,
+    'MOO-' || upper(substr(md5(gen_random_uuid()::text), 1, 4))
+           || '-' || upper(substr(md5(gen_random_uuid()::text), 1, 2))
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create or replace trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+-- 9. GRANTS — allow the authenticated role to read/write every table.
 -- RLS policies control which rows; grants control whether the role can
 -- touch the table at all. Without these, every query returns 403.
 grant usage on schema public to anon, authenticated;
@@ -153,3 +178,8 @@ create policy "Users can select own routes" on routes for select using      (aut
 create policy "Users can insert own routes" on routes for insert with check  (auth.uid() = user_id);
 create policy "Users can update own routes" on routes for update using       (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "Users can delete own routes" on routes for delete using       (auth.uid() = user_id);
+
+-- Add departure city columns to trips
+alter table trips add column if not exists from_city text;
+alter table trips add column if not exists from_lat  float;
+alter table trips add column if not exists from_lon  float;

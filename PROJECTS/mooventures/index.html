@@ -370,9 +370,18 @@
       </div>
     </div>
     <div class="step-panel active" id="mstep0">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:5px">From</div>
+      <div class="search-wrap">
+        <i class="ti ti-map-pin search-ico"></i>
+        <input class="big-input" id="origin-inp" placeholder="Departure city…" autocomplete="off" spellcheck="false">
+        <button class="clear-btn" id="origin-clear" onclick="clearOriginSearch()"><i class="ti ti-x" style="font-size:13px"></i></button>
+      </div>
+      <div id="origin-sug-wrap"></div>
+      <div id="origin-sel-wrap"></div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:10px 0 5px">To</div>
       <div class="search-wrap">
         <i class="ti ti-search search-ico"></i>
-        <input class="big-input" id="city-inp" placeholder="Type any city…" autocomplete="off" spellcheck="false">
+        <input class="big-input" id="city-inp" placeholder="Destination city…" autocomplete="off" spellcheck="false">
         <button class="clear-btn" id="city-clear" onclick="clearCitySearch()"><i class="ti ti-x" style="font-size:13px"></i></button>
       </div>
       <div id="sug-wrap"></div>
@@ -414,12 +423,14 @@
     </div>
     <div class="step-panel" id="mstep3">
       <div style="text-align:center;padding:14px 0 8px">
-        <div style="font-size:36px;margin-bottom:9px" id="cf-flag">🌍</div>
+        <div style="font-size:28px;margin-bottom:6px"><span id="cf-origin-flag">🌍</span><span style="font-size:18px;margin:0 6px;opacity:.4">→</span><span id="cf-flag">🌍</span></div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:1px" id="cf-origin-name">—</div>
         <div style="font-size:16px;font-weight:500;margin-bottom:4px" id="cf-dest">—</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:13px" id="cf-dates">—</div>
         <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
           <span class="confirm-chip brown" id="cf-transport">✈ Flight</span>
           <span class="confirm-chip teal" id="cf-buddies">Solo</span>
+          <span class="confirm-chip" style="background:var(--brs);color:var(--brown)" id="cf-distance">0 km</span>
         </div>
       </div>
     </div>

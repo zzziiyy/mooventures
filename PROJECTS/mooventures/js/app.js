@@ -43,6 +43,8 @@ let currentTripId = null;
 let currentWPs = [];
 let statPeriod = 'month';
 let searchTimer = null;
+let originSearchTimer = null;
+let atOrigin = null;
 let atStep = 0;
 let atDest = null;
 let atFrom = null;
@@ -274,7 +276,7 @@ function renderLog() {
     return `<div class="log-entry">
       <div><div class="le-day">${d.getDate()}</div><div class="le-mon">${MONTHS[d.getMonth()].slice(0,3)}</div></div>
       <div>
-        <div style="font-size:13px;font-weight:500">${t.flag||'🌍'} ${t.city}, ${t.country}</div>
+        <div style="font-size:13px;font-weight:500">${t.from_city?`<span style="color:var(--muted);font-weight:400;font-size:11px">${t.from_city} → </span>`:''}${t.flag||'🌍'} ${t.city}, ${t.country}</div>
         <div class="le-meta">
           <span><i class="ti ti-calendar" style="font-size:11px"></i>${dayCount(t.date_from,t.date_to)} days</span>
           ${t.buddies?.length ? `<span><i class="ti ti-users" style="font-size:11px"></i>${t.buddies.join(', ')}</span>` : '<span><i class="ti ti-user" style="font-size:11px"></i>Solo</span>'}
@@ -302,11 +304,12 @@ async function deleteTrip(id) {
 
 // ─── ADD TRIP MODAL ───────────────────────────
 const MSTEP_TITLES = ['Where did you go?','When did you go?','How did you travel?','All set!'];
-const MSTEP_SUBS = ['Search any city in the world','Tap departure then return date','Transport & travel buddies','Review and save your trip'];
+const MSTEP_SUBS = ['Set your departure and destination','Tap departure then return date','Transport & travel buddies','Review and save your trip'];
 
 function openAddTrip() {
-  atStep=0; atDest=null; atFrom=null; atTo=null; atTransport='Flight'; atSelFrom=true; atBuddies=[];
+  atStep=0; atOrigin=null; atDest=null; atFrom=null; atTo=null; atTransport='Flight'; atSelFrom=true; atBuddies=[];
   clearCitySearch();
+  clearOriginSearch();
   for(let i=0;i<4;i++) document.getElementById('msd'+i).className='msd'+(i===0?' active':'');
   document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('mstep0').classList.add('active');
@@ -323,6 +326,7 @@ function openAddTrip() {
   document.getElementById('trip-notes').value='';
   document.getElementById('add-trip-modal').classList.add('open');
   initCitySearch();
+  initOriginSearch();
 }
 
 function closeAddTrip() { document.getElementById('add-trip-modal').classList.remove('open'); }
@@ -385,8 +389,8 @@ function pickCity(i) {
   cityInpEl().style.display = 'none';
   document.getElementById('city-clear').style.display = 'none';
   sugWrapEl().innerHTML = '';
-  selWrapEl().innerHTML = `<div class="sel-place"><span class="sp-flag">${flag}</span><div><div class="sp-name">${city}, ${country}</div><div class="sp-ctry">Tap next to choose dates</div></div><span class="sp-chg" onclick="clearCitySearch()">Change</span></div>`;
-  document.getElementById('at-next').disabled = false;
+  selWrapEl().innerHTML = `<div class="sel-place"><span class="sp-flag">${flag}</span><div><div class="sp-name">${city}, ${country}</div><div class="sp-ctry">Destination</div></div><span class="sp-chg" onclick="clearCitySearch()">Change</span></div>`;
+  document.getElementById('at-next').disabled = !atOrigin;
 }
 
 function clearCitySearch() {
@@ -398,6 +402,74 @@ function clearCitySearch() {
   selWrapEl().innerHTML = '';
   document.getElementById('at-next').disabled = true;
   setTimeout(() => cityInpEl().focus(), 50);
+}
+
+const originInpEl = () => document.getElementById('origin-inp');
+const originSugEl = () => document.getElementById('origin-sug-wrap');
+const originSelEl = () => document.getElementById('origin-sel-wrap');
+
+function initOriginSearch() {
+  const inp = document.getElementById('origin-inp');
+  if (!inp) return;
+  inp.addEventListener('input', () => {
+    const v = inp.value.trim();
+    document.getElementById('origin-clear').style.display = v ? 'block' : 'none';
+    if (v.length < 2) { originSugEl().innerHTML = ''; return; }
+    originSugEl().innerHTML = `<div class="suggest-list"><div class="status-row"><div class="spinner"></div>Searching…</div></div>`;
+    clearTimeout(originSearchTimer);
+    originSearchTimer = setTimeout(() => searchOriginCities(v), 350);
+  });
+}
+
+async function searchOriginCities(q) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=6&featuretype=city&accept-language=en`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    const data = await res.json();
+    if (!data.length) { originSugEl().innerHTML = `<div class="suggest-list"><div class="status-row">No cities found for "${q}"</div></div>`; return; }
+    const seen = new Set();
+    const items = data.filter(d => {
+      const k = (d.address.city||d.address.town||d.address.village||d.name)+','+(d.address.country||'');
+      if (seen.has(k)) return false; seen.add(k); return true;
+    }).slice(0,5);
+    originSugEl().innerHTML = `<div class="suggest-list">${items.map((d,i) => {
+      const city = d.address.city||d.address.town||d.address.village||d.name;
+      const country = d.address.country||'';
+      const flag = getFlag(d.address.country_code||'');
+      const type = d.type||d.class||'city';
+      return `<div class="sug-item" onclick="pickOrigin(${i})"><span class="sug-flag">${flag}</span><div><div class="sug-city">${city}</div><div class="sug-country">${country}</div></div><span class="sug-type">${type}</span></div>`;
+    }).join('')}</div>`;
+    originSugEl()._data = items;
+  } catch(e) {
+    originSugEl().innerHTML = `<div class="suggest-list"><div class="status-row"><i class="ti ti-wifi-off" style="font-size:15px"></i> Search needs internet</div></div>`;
+  }
+}
+
+function pickOrigin(i) {
+  const d = (originSugEl()._data||[])[i]; if (!d) return;
+  const city = d.address.city||d.address.town||d.address.village||d.name;
+  const country = d.address.country||'';
+  const flag = getFlag(d.address.country_code||'');
+  atOrigin = { city, country, flag, lat: parseFloat(d.lat), lon: parseFloat(d.lon) };
+  originInpEl().style.display = 'none';
+  document.getElementById('origin-clear').style.display = 'none';
+  originSugEl().innerHTML = '';
+  originSelEl().innerHTML = `<div class="sel-place"><span class="sp-flag">${flag}</span><div><div class="sp-name">${city}, ${country}</div><div class="sp-ctry">Departure</div></div><span class="sp-chg" onclick="clearOriginSearch()">Change</span></div>`;
+  document.getElementById('at-next').disabled = !atDest;
+  setTimeout(() => cityInpEl().focus(), 50);
+}
+
+function clearOriginSearch() {
+  atOrigin = null;
+  const inp = document.getElementById('origin-inp');
+  if (inp) {
+    inp.style.display = '';
+    inp.value = '';
+    document.getElementById('origin-clear').style.display = 'none';
+    document.getElementById('origin-sug-wrap').innerHTML = '';
+    document.getElementById('origin-sel-wrap').innerHTML = '';
+  }
+  document.getElementById('at-next').disabled = true;
 }
 
 function setSelFrom(v) {
@@ -508,18 +580,22 @@ function atNav(dir) {
   else if(atStep===3){
     const fd=atFrom?atFrom.toLocaleDateString('en',{month:'short',day:'numeric'}):'—';
     const td=atTo?atTo.toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'}):'—';
+    document.getElementById('cf-origin-flag').textContent=atOrigin?atOrigin.flag:'🌍';
+    document.getElementById('cf-origin-name').textContent=atOrigin?`${atOrigin.city}, ${atOrigin.country}`:'—';
     document.getElementById('cf-flag').textContent=atDest?atDest.flag:'🌍';
     document.getElementById('cf-dest').textContent=atDest?`${atDest.city}, ${atDest.country}`:'—';
     document.getElementById('cf-dates').textContent=`${fd} – ${td}`;
     document.getElementById('cf-transport').textContent=TMAP[atTransport]||'✈ Flight';
     document.getElementById('cf-buddies').textContent=atBuddies.length ? atBuddies.join(', ') : 'Solo';
+    document.getElementById('cf-distance').textContent=estimateDistance(atOrigin?.lat,atOrigin?.lon,atDest?.lat,atDest?.lon).toLocaleString()+' km';
     nn.disabled=false; nn.innerHTML='<i class="ti ti-check" style="font-size:13px"></i> Save trip';
     nn.onclick = saveTrip;
-  } else { nn.disabled=!atDest; nn.innerHTML='Next <i class="ti ti-arrow-right" style="font-size:13px"></i>'; nn.onclick=()=>atNav(1); }
-  if(dir===-1&&atStep===0) nn.disabled=!atDest;
+  } else { nn.disabled=!(atOrigin&&atDest); nn.innerHTML='Next <i class="ti ti-arrow-right" style="font-size:13px"></i>'; nn.onclick=()=>atNav(1); }
+  if(dir===-1&&atStep===0) nn.disabled=!(atOrigin&&atDest);
 }
 
 async function saveTrip() {
+  if(!atOrigin) { alert('Missing departure city — please go back to step 1.'); return; }
   if(!atDest) { alert('Missing destination — please go back to step 1.'); return; }
   if(!atFrom||!atTo) { alert('Missing dates — please go back to step 2.'); return; }
   if(!currentUser) { alert('Not signed in — please reload and sign in again.'); return; }
@@ -531,7 +607,7 @@ async function saveTrip() {
     nn.innerHTML = '<i class="ti ti-check" style="font-size:13px"></i> Save trip';
     nn.onclick = saveTrip;
   };
-  const distEst = estimateDistance(atDest.lat, atDest.lon);
+  const distEst = estimateDistance(atOrigin.lat, atOrigin.lon, atDest.lat, atDest.lon);
   const tripData = {
     user_id: currentUser.id,
     city: atDest.city,
@@ -539,6 +615,9 @@ async function saveTrip() {
     flag: atDest.flag,
     lat: atDest.lat,
     lon: atDest.lon,
+    from_city: atOrigin.city,
+    from_lat: atOrigin.lat,
+    from_lon: atOrigin.lon,
     date_from: atFrom.toISOString().split('T')[0],
     date_to: atTo.toISOString().split('T')[0],
     transport: atTransport,
@@ -607,13 +686,12 @@ async function saveTrip() {
     });
 }
 
-function estimateDistance(lat, lon) {
-  if (!lat || !lon || !currentUser) return 0;
-  const homeLat = 51.97; const homeLon = 5.67;
+function estimateDistance(fromLat, fromLon, toLat, toLon) {
+  if (!fromLat || !fromLon || !toLat || !toLon) return 0;
   const R = 6371;
-  const dLat = (lat-homeLat)*Math.PI/180;
-  const dLon = (lon-homeLon)*Math.PI/180;
-  const a = Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(homeLat*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  const dLat = (toLat - fromLat) * Math.PI / 180;
+  const dLon = (toLon - fromLon) * Math.PI / 180;
+  const a = Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(fromLat*Math.PI/180)*Math.cos(toLat*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
   return Math.round(2*R*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
 }
 
