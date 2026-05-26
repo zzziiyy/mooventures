@@ -9,7 +9,13 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('auth-error').style.display = 'block';
       return;
     }
-    db = supabase.createClient(_url, _key);
+    db = supabase.createClient(_url, _key, {
+      auth: {
+        // Bypass navigator.locks — the default Web Locks implementation can
+        // deadlock across tabs, causing every SDK call to hang indefinitely.
+        lock: async (_name, _timeout, fn) => fn(),
+      }
+    });
     db.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         currentUser = session.user;
