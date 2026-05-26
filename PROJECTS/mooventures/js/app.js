@@ -11,9 +11,14 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     db = supabase.createClient(_url, _key, {
       auth: {
-        // Bypass navigator.locks — the default Web Locks implementation can
-        // deadlock across tabs, causing every SDK call to hang indefinitely.
-        lock: async (_name, _timeout, fn) => fn(),
+        // Disable auto token refresh — the background refresh timer can hang
+        // on certain networks, causing every subsequent SDK call to queue
+        // behind it and wait forever. Sessions stay valid for 1 h; user will
+        // be prompted to re-login after expiry.
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        // No-op lock to skip navigator.locks coordination across tabs.
+        lock: (_name, _timeout, fn) => fn(),
       }
     });
     db.auth.onAuthStateChange(async (event, session) => {
