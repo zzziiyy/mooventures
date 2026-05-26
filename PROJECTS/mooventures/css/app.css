@@ -134,7 +134,8 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background
 .chat-wrap{display:flex;height:100%;overflow:hidden}
 .chat-list{width:196px;flex-shrink:0;border-right:0.5px solid var(--bd);background:var(--sur2);overflow-y:auto;padding:10px}
 .chat-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.chat-hdr{padding:11px 16px;border-bottom:0.5px solid var(--bd);flex-shrink:0}
+.chat-hdr{padding:11px 16px;border-bottom:0.5px solid var(--bd);flex-shrink:0;display:flex;align-items:center;gap:8px}
+.chat-back-btn{display:none;padding:4px 7px;flex-shrink:0}
 .chat-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
 .msg{display:flex;gap:8px;max-width:82%}
 .msg.mine{align-self:flex-end;flex-direction:row-reverse}
@@ -336,5 +337,11 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background
 
 @media (max-width: 400px) {
   .transport-grid{grid-template-columns:repeat(3,1fr)}
-  .chat-list{display:none}
+  /* Mobile chat: show groups list by default, slide to chat when a group is open */
+  .chat-list{width:100%;border-right:none}
+  .chat-main{display:none;position:absolute;inset:0;background:var(--bg);z-index:1}
+  .chat-wrap{position:relative}
+  .chat-wrap.chat-open .chat-list{display:none}
+  .chat-wrap.chat-open .chat-main{display:flex}
+  .chat-back-btn{display:flex}
 }

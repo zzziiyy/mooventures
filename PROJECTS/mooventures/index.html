@@ -199,8 +199,11 @@
         </div>
         <div class="chat-main">
           <div class="chat-hdr" id="chat-hdr">
-            <div style="font-size:13px;font-weight:500" id="chat-trip-name">Select a trip group</div>
-            <div style="font-size:11px;color:var(--muted)" id="chat-trip-meta">Herd only · private</div>
+            <button class="btn chat-back-btn" onclick="closeTripChat()" title="Back to groups"><i class="ti ti-arrow-left" style="font-size:15px"></i></button>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="chat-trip-name">Select a trip group</div>
+              <div style="font-size:11px;color:var(--muted)" id="chat-trip-meta">Herd only · private</div>
+            </div>
           </div>
           <div class="chat-msgs" id="chat-msgs">
             <div class="empty-state" style="margin-top:60px">Select a trip group to start chatting</div>

@@ -10,17 +10,11 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
     db = supabase.createClient(_url, _key, {
-      auth: {
-        // Disable auto token refresh — the background refresh timer can hang
-        // on certain networks, causing every subsequent SDK call to queue
-        // behind it and wait forever. Sessions stay valid for 1 h; user will
-        // be prompted to re-login after expiry.
-        autoRefreshToken: false,
-        detectSessionInUrl: false,
-        // No-op lock to skip navigator.locks coordination across tabs.
-        lock: (_name, _timeout, fn) => fn(),
-      }
+      auth: { autoRefreshToken: false, detectSessionInUrl: false, lock: (_n, _t, fn) => fn() }
     });
+    // Also patch directly — the constructor option is ignored in some CDN builds
+    // because the UMD bundle checks options keys strictly. Direct assignment always works.
+    if (db.auth) db.auth.lock = (_n, _t, fn) => fn();
     db.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         currentUser = session.user;
@@ -306,11 +300,19 @@ function renderLog() {
   }).join('');
 }
 
-async function deleteTrip(id) {
+function deleteTrip(id) {
   if (!confirm('Delete this trip?')) return;
-  await db.from('trips').delete().eq('id', id);
-  trips = trips.filter(t => t.id !== id);
-  renderLog(); renderPlacesList(); renderStats(); refreshMapPins(); renderChatGroups();
+  let settled = false;
+  const done = (err) => {
+    if (settled) return; settled = true;
+    if (err) { alert('Delete failed: ' + err); return; }
+    trips = trips.filter(t => t.id !== id);
+    renderLog(); renderPlacesList(); renderStats(); refreshMapPins(); renderChatGroups();
+  };
+  const tid = setTimeout(() => done('Request timed out — please reload the page and try again.'), 10000);
+  db.from('trips').delete().eq('id', id)
+    .then(({ error }) => { clearTimeout(tid); done(error?.message || null); })
+    .catch(e => { clearTimeout(tid); done(e.message); });
 }
 
 // ─── ADD TRIP MODAL ───────────────────────────
@@ -806,11 +808,17 @@ async function openTripChat(tripId) {
   if(!trip) return;
   document.getElementById('chat-trip-name').textContent = `${trip.flag||'🌍'} ${trip.city} ${new Date(trip.date_from).getFullYear()}`;
   document.getElementById('chat-trip-meta').textContent = `${trip.buddies?.join(', ')||'Solo'} · Herd only · private`;
+  // On mobile, switch from groups list to chat view
+  document.querySelector('.chat-wrap')?.classList.add('chat-open');
   renderChatGroups();
   const { data } = await db.from('messages').select('*').eq('trip_id', tripId).order('created_at', { ascending: true });
   messages = data || [];
   renderMessages();
   subscribeToMessages(tripId);
+}
+
+function closeTripChat() {
+  document.querySelector('.chat-wrap')?.classList.remove('chat-open');
 }
 
 function renderMessages() {
