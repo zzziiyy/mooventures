@@ -1,6 +1,11 @@
 // ─── DB INIT (safe — runs after scripts load) ─
 let db;
 window.addEventListener('DOMContentLoaded', () => {
+  const savedLang = localStorage.getItem('moo_language') || 'en';
+  document.documentElement.lang = savedLang;
+  const langSel = document.getElementById('lang-select');
+  if (langSel) langSel.value = savedLang;
+
   try {
     const _url = SUPABASE_URL.trim().replace(/\/$/, '');
     const _key = SUPABASE_ANON_KEY.trim();
@@ -164,25 +169,42 @@ function initMap() {
   const W = container.offsetWidth;
   const H = container.offsetHeight || 400;
   const svg = d3.select('#world-svg');
+  svg.selectAll('*').remove();
+  window._mapSvg = null;
+
   svg.attr('viewBox', `0 0 ${W} ${H}`).attr('preserveAspectRatio','xMidYMid meet');
   svg.append('rect').attr('width',W).attr('height',H).attr('fill','#d4e8f5');
 
+  const zoomLayer = svg.append('g').attr('class','zoom-layer');
   const proj = d3.geoNaturalEarth1().scale(W/6.2).translate([W/2, H/2]);
   const path = d3.geoPath(proj);
   const tip = document.getElementById('map-tooltip');
 
+  const zoom = d3.zoom()
+    .scaleExtent([1, 8])
+    .on('zoom', (event) => {
+      zoomLayer.attr('transform', event.transform);
+      const k = event.transform.k;
+      zoomLayer.selectAll('.pin-label').style('display', k >= 2.5 ? null : 'none');
+      svg.style('cursor', event.type === 'start' ? 'grabbing' : 'grab');
+    });
+
+  svg.call(zoom).style('cursor','grab');
+  window._mapZoom = zoom;
+  window._mapSvgEl = svg;
+
   const renderWorld = (world) => {
-    svg.append('path').datum(d3.geoGraticule()()).attr('d',path)
+    zoomLayer.append('path').datum(d3.geoGraticule()()).attr('d',path)
       .attr('fill','none').attr('stroke','rgba(176,200,224,0.35)').attr('stroke-width',0.4);
-    svg.append('g').selectAll('path')
+    zoomLayer.append('g').selectAll('path')
       .data(topojson.feature(world, world.objects.countries).features)
       .join('path').attr('d',path).attr('fill','#c8d8b0').attr('stroke','#a0b88a').attr('stroke-width',0.4);
-    svg.append('path')
+    zoomLayer.append('path')
       .datum(topojson.mesh(world, world.objects.countries,(a,b)=>a!==b))
       .attr('d',path).attr('fill','none').attr('stroke','#a0b88a').attr('stroke-width',0.5);
     window._mapProj = proj;
     window._mapPath = path;
-    window._mapSvg = svg;
+    window._mapSvg = zoomLayer;
     window._mapTip = tip;
     window._mapContainer = container;
     refreshMapPins();
@@ -199,6 +221,16 @@ function initMap() {
   }).catch(() => {
     document.getElementById('map-stat').textContent = 'Map needs internet connection';
   });
+}
+
+function mapZoom(factor) {
+  if (!window._mapSvgEl || !window._mapZoom) return;
+  window._mapSvgEl.transition().duration(300).call(window._mapZoom.scaleBy, factor);
+}
+
+function mapZoomReset() {
+  if (!window._mapSvgEl || !window._mapZoom) return;
+  window._mapSvgEl.transition().duration(400).call(window._mapZoom.transform, d3.zoomIdentity);
 }
 
 function refreshMapPins() {
@@ -219,6 +251,13 @@ function refreshMapPins() {
     g.append('circle').attr('r',9).attr('fill',color).attr('opacity',.15);
     g.append('circle').attr('r',6).attr('fill',color).attr('opacity',.9);
     g.append('circle').attr('r',2.8).attr('fill','#fff');
+    g.append('text').attr('class','pin-label')
+      .attr('y',-11).attr('text-anchor','middle')
+      .attr('font-size','7px').attr('font-family','DM Sans,sans-serif')
+      .attr('fill',color).attr('font-weight','600')
+      .attr('stroke','#fff').attr('stroke-width','2.5').attr('paint-order','stroke')
+      .style('display','none').style('pointer-events','none')
+      .text(t.city);
     g.on('mousemove', ev => {
       const r = container.getBoundingClientRect();
       tip.style.left = (ev.clientX-r.left+10)+'px';
@@ -1028,6 +1067,33 @@ function renderTopDestinations(filtered) {
       <div style="flex:1"><div style="font-size:13px;font-weight:500">${t.city}, ${t.country}</div><div style="font-size:11px;color:var(--muted)">${formatDate(t.date_from)} · ${t.buddies?.join(', ')||'Solo'}</div></div>
       <div class="tdist">${(t.distance_km||0).toLocaleString()} km</div>
     </div>`).join('');
+}
+
+// ─── PROFILE EDIT ────────────────────────────
+function openEditProfile() {
+  document.getElementById('edit-name-inp').value = document.getElementById('user-name').textContent;
+  document.getElementById('edit-profile-modal').classList.add('open');
+}
+
+function closeEditProfile() {
+  document.getElementById('edit-profile-modal').classList.remove('open');
+}
+
+async function saveProfile() {
+  const name = document.getElementById('edit-name-inp').value.trim();
+  if (!name) return;
+  const { error } = await db.from('profiles').update({ name }).eq('id', currentUser.id);
+  if (error) { alert('Error saving: ' + error.message); return; }
+  const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('user-av').textContent = initials;
+  document.getElementById('user-name').textContent = name;
+  closeEditProfile();
+}
+
+// ─── LANGUAGE ─────────────────────────────────
+function setLanguage(lang) {
+  localStorage.setItem('moo_language', lang);
+  document.documentElement.lang = lang;
 }
 
 // ─── DATA EXPORT ─────────────────────────────

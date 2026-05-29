@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Mooventures">
 <title>Mooventures — roam together</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
@@ -18,25 +20,30 @@
   <div class="auth-card">
     <div class="auth-logo">
       <svg width="56" height="56" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="18" cy="22" rx="11" ry="8" fill="#f5efe6" stroke="#c9a87a" stroke-width="1"/>
-        <ellipse cx="14" cy="21" rx="4" ry="3" fill="#8b6340" opacity=".55"/>
-        <ellipse cx="22" cy="24" rx="3" ry="2" fill="#8b6340" opacity=".45"/>
-        <ellipse cx="18" cy="13" rx="7" ry="6" fill="#f5efe6" stroke="#c9a87a" stroke-width="1"/>
-        <path d="M11 10 Q12 5 13 8 Q14 4 15 7 Q16 3 17 7 Q18 3 19 7 Q20 4 21 8 Q22 5 23 10" fill="#c9a87a"/>
-        <ellipse cx="10.5" cy="12" rx="3" ry="2" fill="#f5efe6" stroke="#c9a87a" stroke-width="1" transform="rotate(-20,10.5,12)"/>
-        <ellipse cx="25.5" cy="12" rx="3" ry="2" fill="#f5efe6" stroke="#c9a87a" stroke-width="1" transform="rotate(20,25.5,12)"/>
-        <ellipse cx="10.5" cy="12" rx="1.8" ry="1.2" fill="#f0c4b0" transform="rotate(-20,10.5,12)"/>
-        <ellipse cx="25.5" cy="12" rx="1.8" ry="1.2" fill="#f0c4b0" transform="rotate(20,25.5,12)"/>
-        <circle cx="15" cy="12" r="1.4" fill="#3d2b1f"/><circle cx="21" cy="12" r="1.4" fill="#3d2b1f"/>
-        <circle cx="15.4" cy="11.6" r=".45" fill="#fff"/><circle cx="21.4" cy="11.6" r=".45" fill="#fff"/>
-        <ellipse cx="16.5" cy="15" rx="1" ry=".7" fill="#c9a87a"/><ellipse cx="19.5" cy="15" rx="1" ry=".7" fill="#c9a87a"/>
-        <rect x="10" y="28" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
-        <rect x="15" y="29" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
-        <rect x="22" y="28" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
-        <path d="M29 22 Q33 19 32 24" stroke="#c9a87a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <ellipse cx="32" cy="24.5" rx="1.8" ry="1.2" fill="#c9a87a"/>
-        <rect x="16.5" y="18" width="3" height="3.5" rx="1" fill="#e8b44a" stroke="#c9950a" stroke-width=".5"/>
-        <circle cx="18" cy="22" r=".6" fill="#c9950a"/>
+        <!-- Horns -->
+        <path d="M12 15 C9 9 4 10 4.5 15 C5 17 8 16.5 10 15.5" stroke="#c8a050" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <path d="M24 15 C27 9 32 10 31.5 15 C31 17 28 16.5 26 15.5" stroke="#c8a050" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <!-- Body -->
+        <ellipse cx="18" cy="30" rx="11" ry="5.5" fill="#cd7f32"/>
+        <path d="M7 30.5 Q9 35 11 31 Q13 35.5 15 31 Q17 35 18 31 Q19 35 21 31 Q23 35.5 25 31 Q27 35 29 30.5" fill="#a0522d" stroke="none"/>
+        <!-- Ears -->
+        <ellipse cx="8.5" cy="18" rx="3" ry="2" fill="#e0a882" transform="rotate(-20,8.5,18)"/>
+        <ellipse cx="8.5" cy="18" rx="1.7" ry="1.1" fill="#f0c4b0" transform="rotate(-20,8.5,18)"/>
+        <ellipse cx="27.5" cy="18" rx="3" ry="2" fill="#e0a882" transform="rotate(20,27.5,18)"/>
+        <ellipse cx="27.5" cy="18" rx="1.7" ry="1.1" fill="#f0c4b0" transform="rotate(20,27.5,18)"/>
+        <!-- Head -->
+        <circle cx="18" cy="18" r="9.5" fill="#cd7f32"/>
+        <!-- Shaggy fringe — the highland cow's signature look -->
+        <path d="M8.5 18.5 C8 10.5 10 8.5 11 13 C11.5 7.5 13 7 14 12 C14 6 15.5 5.5 16.5 11 C16 6 17.5 5 18.5 11 C18 5.5 19.5 5.5 20.5 11.5 C20.5 7 22 7.5 23 12 C23.5 7 25 8.5 25.5 13 C26 10 27.5 11 27.5 18.5" fill="#8b4513" stroke="none"/>
+        <!-- Eyes peeking from below fringe -->
+        <circle cx="14.5" cy="20" r="2" fill="#2d1a0a"/>
+        <circle cx="21.5" cy="20" r="2" fill="#2d1a0a"/>
+        <circle cx="15.1" cy="19.4" r=".65" fill="#fff"/>
+        <circle cx="22.1" cy="19.4" r=".65" fill="#fff"/>
+        <!-- Muzzle -->
+        <ellipse cx="18" cy="24.5" rx="4.5" ry="3" fill="#e8b09a"/>
+        <ellipse cx="16.5" cy="25" rx=".9" ry=".7" fill="#c07060"/>
+        <ellipse cx="19.5" cy="25" rx=".9" ry=".7" fill="#c07060"/>
       </svg>
     </div>
     <div class="auth-title">Mooventures</div>
@@ -73,25 +80,23 @@
   <nav class="sidebar" id="sidebar">
     <div class="brand">
       <svg class="cow-icon" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="18" cy="22" rx="11" ry="8" fill="#f5efe6" stroke="#c9a87a" stroke-width="1"/>
-        <ellipse cx="14" cy="21" rx="4" ry="3" fill="#8b6340" opacity=".55"/>
-        <ellipse cx="22" cy="24" rx="3" ry="2" fill="#8b6340" opacity=".45"/>
-        <ellipse cx="18" cy="13" rx="7" ry="6" fill="#f5efe6" stroke="#c9a87a" stroke-width="1"/>
-        <path d="M11 10 Q12 5 13 8 Q14 4 15 7 Q16 3 17 7 Q18 3 19 7 Q20 4 21 8 Q22 5 23 10" fill="#c9a87a"/>
-        <ellipse cx="10.5" cy="12" rx="3" ry="2" fill="#f5efe6" stroke="#c9a87a" stroke-width="1" transform="rotate(-20,10.5,12)"/>
-        <ellipse cx="25.5" cy="12" rx="3" ry="2" fill="#f5efe6" stroke="#c9a87a" stroke-width="1" transform="rotate(20,25.5,12)"/>
-        <ellipse cx="10.5" cy="12" rx="1.8" ry="1.2" fill="#f0c4b0" transform="rotate(-20,10.5,12)"/>
-        <ellipse cx="25.5" cy="12" rx="1.8" ry="1.2" fill="#f0c4b0" transform="rotate(20,25.5,12)"/>
-        <circle cx="15" cy="12" r="1.4" fill="#3d2b1f"/><circle cx="21" cy="12" r="1.4" fill="#3d2b1f"/>
-        <circle cx="15.4" cy="11.6" r=".45" fill="#fff"/><circle cx="21.4" cy="11.6" r=".45" fill="#fff"/>
-        <ellipse cx="16.5" cy="15" rx="1" ry=".7" fill="#c9a87a"/><ellipse cx="19.5" cy="15" rx="1" ry=".7" fill="#c9a87a"/>
-        <rect x="10" y="28" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
-        <rect x="15" y="29" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
-        <rect x="22" y="28" width="4" height="5" rx="2" fill="#f5efe6" stroke="#c9a87a" stroke-width=".8"/>
-        <path d="M29 22 Q33 19 32 24" stroke="#c9a87a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <ellipse cx="32" cy="24.5" rx="1.8" ry="1.2" fill="#c9a87a"/>
-        <rect x="16.5" y="18" width="3" height="3.5" rx="1" fill="#e8b44a" stroke="#c9950a" stroke-width=".5"/>
-        <circle cx="18" cy="22" r=".6" fill="#c9950a"/>
+        <path d="M12 15 C9 9 4 10 4.5 15 C5 17 8 16.5 10 15.5" stroke="#c8a050" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <path d="M24 15 C27 9 32 10 31.5 15 C31 17 28 16.5 26 15.5" stroke="#c8a050" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <ellipse cx="18" cy="30" rx="11" ry="5.5" fill="#cd7f32"/>
+        <path d="M7 30.5 Q9 35 11 31 Q13 35.5 15 31 Q17 35 18 31 Q19 35 21 31 Q23 35.5 25 31 Q27 35 29 30.5" fill="#a0522d" stroke="none"/>
+        <ellipse cx="8.5" cy="18" rx="3" ry="2" fill="#e0a882" transform="rotate(-20,8.5,18)"/>
+        <ellipse cx="8.5" cy="18" rx="1.7" ry="1.1" fill="#f0c4b0" transform="rotate(-20,8.5,18)"/>
+        <ellipse cx="27.5" cy="18" rx="3" ry="2" fill="#e0a882" transform="rotate(20,27.5,18)"/>
+        <ellipse cx="27.5" cy="18" rx="1.7" ry="1.1" fill="#f0c4b0" transform="rotate(20,27.5,18)"/>
+        <circle cx="18" cy="18" r="9.5" fill="#cd7f32"/>
+        <path d="M8.5 18.5 C8 10.5 10 8.5 11 13 C11.5 7.5 13 7 14 12 C14 6 15.5 5.5 16.5 11 C16 6 17.5 5 18.5 11 C18 5.5 19.5 5.5 20.5 11.5 C20.5 7 22 7.5 23 12 C23.5 7 25 8.5 25.5 13 C26 10 27.5 11 27.5 18.5" fill="#8b4513" stroke="none"/>
+        <circle cx="14.5" cy="20" r="2" fill="#2d1a0a"/>
+        <circle cx="21.5" cy="20" r="2" fill="#2d1a0a"/>
+        <circle cx="15.1" cy="19.4" r=".65" fill="#fff"/>
+        <circle cx="22.1" cy="19.4" r=".65" fill="#fff"/>
+        <ellipse cx="18" cy="24.5" rx="4.5" ry="3" fill="#e8b09a"/>
+        <ellipse cx="16.5" cy="25" rx=".9" ry=".7" fill="#c07060"/>
+        <ellipse cx="19.5" cy="25" rx=".9" ry=".7" fill="#c07060"/>
       </svg>
       <div><div class="bname">Mooventures</div><div class="btag">roam together</div></div>
     </div>
@@ -110,6 +115,7 @@
       <div class="av-row">
         <div class="av" id="user-av">?</div>
         <span class="user-name" id="user-name">Loading…</span>
+        <button class="btn-edit-profile" onclick="openEditProfile()" title="Edit profile"><i class="ti ti-pencil" style="font-size:13px"></i></button>
       </div>
       <button class="btn-signout" onclick="signOut()"><i class="ti ti-logout"></i> Sign out</button>
     </div>
@@ -128,6 +134,12 @@
           <svg id="world-svg" style="width:100%;height:100%"></svg>
           <div id="map-tooltip" class="map-tooltip"></div>
           <div id="map-stat" class="map-stat">Loading map…</div>
+          <div class="map-zoom-controls">
+            <button onclick="mapZoom(1.5)" title="Zoom in"><i class="ti ti-plus" style="font-size:13px"></i></button>
+            <button onclick="mapZoomReset()" title="Reset view"><i class="ti ti-focus-2" style="font-size:13px"></i></button>
+            <button onclick="mapZoom(1/1.5)" title="Zoom out"><i class="ti ti-minus" style="font-size:13px"></i></button>
+          </div>
+          <div class="map-zoom-hint">Scroll or pinch to zoom · drag to pan</div>
           <div class="map-legend">
             <div class="leg-row"><div class="ldot" style="background:#7c5c2e"></div>Visited</div>
             <div class="leg-row"><div class="ldot" style="background:#0f766e"></div>Long stay</div>
@@ -343,6 +355,23 @@
             <div class="toggle-row"><div><div class="tl2" style="color:var(--rose)">Delete account</div><div class="ts2">Permanently removes all your data</div></div><button class="btn" style="font-size:11px;color:var(--rose);border-color:var(--rose)" onclick="confirmDeleteAccount()">Delete</button></div>
           </div>
         </div>
+        <div class="priv-section">
+          <div class="ps-head"><div class="ps-icon" style="background:var(--skys);color:var(--sky)"><i class="ti ti-language"></i></div><div><div class="ps-title">Language</div><div class="ps-sub">App display language</div></div></div>
+          <div style="padding:10px 14px">
+            <div class="toggle-row"><div><div class="tl2">Display language</div><div class="ts2">Choose your preferred language</div></div>
+              <select id="lang-select" class="lang-select" onchange="setLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="zh">中文</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="ja">日本語</option>
+                <option value="ko">한국어</option>
+                <option value="pt">Português</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div></div>
     </div>
 
@@ -358,6 +387,23 @@
   </nav>
 
 </div><!-- /app -->
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-bg" id="edit-profile-modal" onclick="if(event.target===this)closeEditProfile()">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:320px">
+    <div class="modal-head">
+      <div class="modal-title">Edit profile</div>
+      <div class="modal-sub">Update your display name</div>
+    </div>
+    <div style="padding:20px">
+      <div class="fg"><label class="fl">Display name</label><input class="fi" type="text" id="edit-name-inp" placeholder="Your name" autocomplete="name"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+        <button class="btn" onclick="closeEditProfile()">Cancel</button>
+        <button class="btn pri" onclick="saveProfile()"><i class="ti ti-check" style="font-size:13px"></i> Save</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ADD TRIP MODAL -->
 <div class="modal-bg" id="add-trip-modal" onclick="if(event.target===this)closeAddTrip()">
