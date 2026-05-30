@@ -140,6 +140,8 @@ async function loadUserProfile() {
     const initials = data.name ? data.name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2) : '?';
     document.getElementById('user-av').textContent = initials;
     document.getElementById('user-name').textContent = data.name || currentUser.email;
+    document.getElementById('privacy-av').textContent = initials;
+    document.getElementById('privacy-name').textContent = data.name || currentUser.email;
     document.getElementById('moo-code-display').textContent = data.moo_code || '';
     if (!data.moo_code) {
       const code = generateMooCode();
@@ -1087,6 +1089,8 @@ async function saveProfile() {
   const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
   document.getElementById('user-av').textContent = initials;
   document.getElementById('user-name').textContent = name;
+  document.getElementById('privacy-av').textContent = initials;
+  document.getElementById('privacy-name').textContent = name;
   closeEditProfile();
 }
 

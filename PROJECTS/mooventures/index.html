@@ -6,6 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Mooventures">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c5c2e">
 <title>Mooventures — roam together</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
@@ -332,6 +335,16 @@
       </div>
       <div class="scroll"><div style="padding:18px 20px">
         <div class="priv-section">
+          <div class="ps-head" style="gap:12px">
+            <div class="av" id="privacy-av" style="width:40px;height:40px;font-size:16px;flex-shrink:0">?</div>
+            <div style="flex:1;min-width:0">
+              <div class="ps-title" id="privacy-name" style="font-size:14px">Loading…</div>
+              <div class="ps-sub">Your profile</div>
+            </div>
+            <button class="btn" style="font-size:11px;flex-shrink:0" onclick="openEditProfile()"><i class="ti ti-pencil" style="font-size:13px"></i> Edit</button>
+          </div>
+        </div>
+        <div class="priv-section">
           <div class="ps-head"><div class="ps-icon" style="background:var(--brs);color:var(--brown)"><i class="ti ti-users"></i></div><div><div class="ps-title">Your travel data</div><div class="ps-sub">Visible only to your herd</div></div></div>
           <div style="padding:10px 14px">
             <div class="toggle-row"><div><div class="tl2">World map <span class="vpill vp-herd">Herd only</span></div><div class="ts2">Visited places and routes</div></div><label class="tog"><input type="checkbox" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
@@ -384,6 +397,7 @@
     <div class="bn-item" data-panel="chat" onclick="showPanel('chat',this)"><i class="ti ti-messages"></i><span>Chat</span></div>
     <div class="bn-item bn-special" data-panel="serendipity" onclick="showPanel('serendipity',this)"><i class="ti ti-sparkles"></i><span>Serendipity</span></div>
     <div class="bn-item" data-panel="stats" onclick="showPanel('stats',this)"><i class="ti ti-chart-bar"></i><span>Stats</span></div>
+    <div class="bn-item" data-panel="privacy" onclick="showPanel('privacy',this)"><i class="ti ti-settings"></i><span>Settings</span></div>
   </nav>
 
 </div><!-- /app -->

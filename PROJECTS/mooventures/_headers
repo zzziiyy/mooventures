@@ -1,8 +1,14 @@
 /*.html
   Cache-Control: no-cache, must-revalidate
 
+/*.json
+  Cache-Control: no-cache, must-revalidate
+
 /js/*
   Cache-Control: no-cache, must-revalidate
 
 /css/*
   Cache-Control: no-cache, must-revalidate
+
+/*.png
+  Cache-Control: public, max-age=604800
