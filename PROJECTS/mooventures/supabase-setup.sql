@@ -183,3 +183,33 @@ create policy "Users can delete own routes" on routes for delete using       (au
 alter table trips add column if not exists from_city text;
 alter table trips add column if not exists from_lat  float;
 alter table trips add column if not exists from_lon  float;
+
+-- ─────────────────────────────────────────────
+-- ARCHIVE — memories table + storage bucket
+-- Run this block to enable the Archive feature.
+-- ─────────────────────────────────────────────
+
+-- Memories table
+create table if not exists memories (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references profiles(id) on delete cascade,
+  trip_id uuid references trips(id) on delete set null,
+  content text,
+  photo_urls text[] default '{}',
+  created_at timestamptz default now()
+);
+alter table memories enable row level security;
+create policy "Users can select own memories" on memories for select using (auth.uid() = user_id);
+create policy "Users can insert own memories" on memories for insert with check (auth.uid() = user_id);
+create policy "Users can delete own memories" on memories for delete using (auth.uid() = user_id);
+grant select, insert, update, delete on table memories to authenticated;
+
+-- Storage bucket for memory photos
+-- (Run in Supabase Dashboard → Storage → New bucket, name: "memories", public: true)
+-- Or via SQL:
+insert into storage.buckets (id, name, public) values ('memories', 'memories', true)
+  on conflict (id) do nothing;
+create policy "Users can upload own memory photos" on storage.objects
+  for insert with check (bucket_id = 'memories' and auth.uid()::text = (storage.foldername(name))[1]);
+create policy "Anyone can view memory photos" on storage.objects
+  for select using (bucket_id = 'memories');
